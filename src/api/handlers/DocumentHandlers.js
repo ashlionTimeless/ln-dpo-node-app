@@ -17,7 +17,7 @@ export default class DocumentHandlers extends AbstractCrudHandlers {
                 console.log("DocumentHandlers fullRegisterDocument document_url",document_url);
                 console.log("DocumentHandlers fullRegisterDocument document_name",document_name);
                 const external_id = ExternalIdGenerator.generateExternalId();
-                const filepath = await DocumentFilepathHelper.composeFilepath(document_url,document_name)["filePath"];
+                const filepath = await DocumentFilepathHelper.composeFilepath(document_url,document_name);
                 console.log("DocumentHandlers fullRegisterDocument filepath",filepath);
                 const uploaded = await DocumentRegistrator.downloadAndPlaceDocument(document_url, filepath);
                 if(uploaded){

@@ -32,12 +32,7 @@ class DocumentFilepathHelper {
                 const fileName = path.basename(urlPath) || 'document';
                 const filePath = path.join(inputPath, fileName);
 
-                let result = {
-                    "basePath":basePath,
-                    "inputPath":inputPath,
-                    "outputPath":outputPath,
-                    "filePath":filePath
-                }
+                let result = filePath;
 
                 console.log("DocumentFilepathHelper composeFilepath result",result);
                 return resolve(result);

@@ -17,7 +17,8 @@ export default class DocumentRegistrator {
     static downloadAndPlaceDocument(document_url,filepath) {
         return new Promise(async(resolve,reject)=>{ 
             try {
-
+                console.log("DocumentRegistrator downloadAndPlaceDocument document_url",document_url);
+                console.log("DocumentRegistrator downloadAndPlaceDocument filepath",filepath);
                 // Download file from URL
                 const response = await axios({
                     method: 'GET',
@@ -25,6 +26,7 @@ export default class DocumentRegistrator {
                     responseType: 'stream',
                     timeout: 30000 // 30 second timeout
                 });
+
 
                 // Save the file
                 const writer = fs.createWriteStream(filepath);

@@ -39,6 +39,7 @@ class DocumentFilepathHelper {
                     "filePath":filePath
                 }
 
+                console.log("DocumentFilepathHelper composeFilepath result",result);
                 return resolve(result);
             }catch(error){
                 reject(error);

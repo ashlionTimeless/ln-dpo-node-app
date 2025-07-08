@@ -38,7 +38,7 @@ export default class DocumentRegistrator {
     // }
 
 
-    static downloadAndPlaceDocument2(document_url, document_name) {
+    static downloadAndPlaceDocument(document_url, document_name) {
         return new Promise(async(resolve,reject)=>{ 
             try {
                 const sanitizedDocumentName = document_name.replace(/[^a-zA-Z0-9-_]/g, '_');        
@@ -50,7 +50,13 @@ export default class DocumentRegistrator {
                 const outputPath = path.join(basePath, 'output');
 
                 const data = { name: 'John', age: 30, city: 'New York' };
-                await fs.writeFile(`${inputPath}/data.json`, JSON.stringify(data, null, 2), 'utf8');
+                fs.writeFile(`${inputPath}/data.json`, JSON.stringify(data, null, 2), 'utf8',(err)=>{
+                    if(err){
+                        console.error('DocumentRegistrator data.json write error:', err);
+                        return reject(err);
+                    }
+                    console.log("DocumentRegistrator data.json written successfully");
+                });
                 console.log("DocumentRegistrator data.json written successfully");
 
                 // console.log("DocumentRegistrator basePath",basePath);

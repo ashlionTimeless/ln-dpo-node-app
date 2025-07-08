@@ -55,9 +55,9 @@ export default class DocumentRegistrator {
                 
                 // Save the file synchronously
                 console.log("DocumentRegistrator writing file synchronously");
-                fs.writeFileSync(filePath, response.data);
+                let result = fs.writeFileSync(filePath, response.data);
+                console.log("DocumentRegistrator result",result);
                 
-                console.log("DocumentRegistrator file written successfully");
                 return resolve(true);
                 
             } catch (error) {

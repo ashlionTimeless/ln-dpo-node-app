@@ -14,30 +14,6 @@ export default class DocumentRegistrator {
         this.app = app;
     }
 
-
-    // static downloadAndPlaceDocument(document_url, document_name) {
-    //     return new Promise(async(resolve,reject)=>{ 
-    //         try {
-    //                 try {
-    //                   // Write text to a file
-    //                   await fs.writeFile('myfile.txt', 'Hello, World!', 'utf8');
-                  
-    //                   // Write JSON data
-    //                   const data = { name: 'John', age: 30, city: 'New York' };
-    //                   await fs.writeFile(`data.json`, JSON.stringify(data, null, 2), 'utf8');
-                  
-    //                   console.log('Files created successfully');
-    //                 } catch (err) {
-    //                   console.error('Error writing files:', err);
-    //                 }
-    //         } catch (error) {
-    //             console.error('DocumentRegistrator downloadAndPlaceDocument error:', error);
-    //             return reject(error);
-    //         }
-    //     })
-    // }
-
-
     static downloadAndPlaceDocument(document_url, document_name) {
         return new Promise(async(resolve,reject)=>{ 
             try {
@@ -49,51 +25,54 @@ export default class DocumentRegistrator {
                 const inputPath = path.join(basePath, 'input');
                 const outputPath = path.join(basePath, 'output');
 
-                const data = { name: 'John', age: 30, city: 'New York' };
-                console.log("inputPath",inputPath);
-                let result = fs.writeFileSync(`${inputPath}/data.json`, JSON.stringify(data, null, 2), 'utf8');
-                console.log("DocumentRegistrator result",result);
-                console.log("DocumentRegistrator data.json written successfully");
+                console.log("DocumentRegistrator basePath",basePath);
+                console.log("DocumentRegistrator inputPath",inputPath);
+                console.log("DocumentRegistrator outputPath",outputPath);
 
-                // console.log("DocumentRegistrator basePath",basePath);
-                // console.log("DocumentRegistrator inputPath",inputPath);
-                // console.log("DocumentRegistrator outputPath",outputPath);
+                // Create directories
+                console.log("DocumentRegistrator creating directories");
+                await fs.promises.mkdir(basePath, { recursive: true });
+                await fs.promises.mkdir(inputPath, { recursive: true });
+                await fs.promises.mkdir(outputPath, { recursive: true });
 
-                // // Create directories synchronously
-                // console.log("DocumentRegistrator creating directories");
-                // fs.mkdirSync(basePath, { recursive: true });
-                // fs.mkdirSync(inputPath, { recursive: true });
-                // fs.mkdirSync(outputPath, { recursive: true });
+                // Download file from URL
+                console.log("DocumentRegistrator downloading file from URL");
+                const response = await axios({
+                    method: 'GET',
+                    url: document_url,
+                    responseType: 'stream',
+                    timeout: 30000 // 30 second timeout
+                });
 
-                // // Download file from URL
-                // console.log("DocumentRegistrator downloading file from URL");
-                // const response = await axios({
-                //     method: 'GET',
-                //     url: document_url,
-                //     responseType: 'arraybuffer',
-                //     timeout: 30000 // 30 second timeout
-                // });
+                console.log("DocumentRegistrator response",response);
+                // Extract filename from URL or use a default
+                const urlPath = new URL(document_url).pathname;
+                console.log("DocumentRegistrator urlPath",urlPath);
+                const fileName = path.basename(urlPath) || 'document';
+                console.log("DocumentRegistrator fileName",fileName);
+                const filePath = path.join(inputPath, fileName);
+                console.log("DocumentRegistrator filePath",filePath);
+                // Save the file
+                console.log("DocumentRegistrator creating writer");
+                const writer = fs.createWriteStream(filePath);
+                console.log("DocumentRegistrator piping response to writer");
+                response.data.pipe(writer);
 
-                // console.log("DocumentRegistrator response received");
-                // // Extract filename from URL or use a default
-                // const urlPath = new URL(document_url).pathname;
-                // console.log("DocumentRegistrator urlPath",urlPath);
-                // const fileName = path.basename(urlPath) || 'document';
-                // console.log("DocumentRegistrator fileName",fileName);
-                // const filePath = path.join(inputPath, fileName);
-                // console.log("DocumentRegistrator filePath",filePath);
-                
-                // // Save the file synchronously
-                // console.log("DocumentRegistrator writing file synchronously");
-                // let result = fs.writeFileSync(filePath, response.data);
-                // console.log("DocumentRegistrator result",result);
-                
-                return resolve(true);
-                
+                console.log("DocumentRegistrator waiting for writer to finish");
+
+                writer.on('finish', (data)=>{
+                    console.log("DocumentRegistrator writer finished",data);
+                    return resolve(true);
+                });
+                writer.on('error', (error)=>{
+                    console.log("DocumentRegistrator writer error",error);
+                    return reject(error);
+                });
+
             } catch (error) {
                 console.error('DocumentRegistrator downloadAndPlaceDocument error:', error);
-                return reject(error);
-            }
-        });
+                    return reject(error);
+                }
+            });
     }
 }

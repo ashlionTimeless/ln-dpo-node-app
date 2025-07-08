@@ -1,6 +1,12 @@
+'use strict';
+import dotenv from 'dotenv';
+dotenv.config();
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
+
+const DOCUMENT_FOLDER_PATH = process.env.DOCUMENT_FOLDER_PATH;
+const __dirname = DOCUMENT_FOLDER_PATH;
 
 export default class DocumentRegistrator {
 
@@ -14,7 +20,7 @@ export default class DocumentRegistrator {
                 const sanitizedDocumentName = document_name.replace(/[^a-zA-Z0-9-_]/g, '_');        
                 console.log("DocumentRegistrator downloadAndPlaceDocument sanitizedDocumentName",sanitizedDocumentName);
                 // Define paths
-                const basePath = path.join(__dirname, 'ms_graphrag', 'docs', sanitizedDocumentName);
+                const basePath = path.join(__dirname, sanitizedDocumentName);
                 const inputPath = path.join(basePath, 'input');
                 const outputPath = path.join(basePath, 'output');
 

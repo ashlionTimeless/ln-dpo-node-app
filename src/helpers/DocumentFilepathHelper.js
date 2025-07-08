@@ -1,3 +1,11 @@
+'use strict';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const DOCUMENT_FOLDER_PATH = process.env.DOCUMENT_FOLDER_PATH;
+const __dirname = DOCUMENT_FOLDER_PATH;
+
+
 import path from "path";
 import fs from "fs";
 import axios from "axios";

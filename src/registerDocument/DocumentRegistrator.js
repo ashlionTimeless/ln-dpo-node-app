@@ -29,22 +29,22 @@ export default class DocumentRegistrator {
                 console.log("DocumentRegistrator inputPath",inputPath);
                 console.log("DocumentRegistrator outputPath",outputPath);
 
-                // Create directories
+                // Create directories synchronously
                 console.log("DocumentRegistrator creating directories");
-                await fs.promises.mkdir(basePath, { recursive: true });
-                await fs.promises.mkdir(inputPath, { recursive: true });
-                await fs.promises.mkdir(outputPath, { recursive: true });
+                fs.mkdirSync(basePath, { recursive: true });
+                fs.mkdirSync(inputPath, { recursive: true });
+                fs.mkdirSync(outputPath, { recursive: true });
 
                 // Download file from URL
                 console.log("DocumentRegistrator downloading file from URL");
                 const response = await axios({
                     method: 'GET',
                     url: document_url,
-                    responseType: 'stream',
+                    responseType: 'arraybuffer',
                     timeout: 30000 // 30 second timeout
                 });
 
-                console.log("DocumentRegistrator response",response);
+                console.log("DocumentRegistrator response received");
                 // Extract filename from URL or use a default
                 const urlPath = new URL(document_url).pathname;
                 console.log("DocumentRegistrator urlPath",urlPath);
@@ -52,26 +52,18 @@ export default class DocumentRegistrator {
                 console.log("DocumentRegistrator fileName",fileName);
                 const filePath = path.join(inputPath, fileName);
                 console.log("DocumentRegistrator filePath",filePath);
-                // Save the file
-                console.log("DocumentRegistrator creating writer");
-                const writer = fs.createWriteStream(filePath);
-                console.log("DocumentRegistrator piping response to writer");
-                response.data.pipe(writer);
-
-                console.log("DocumentRegistrator waiting for writer to finish");
-
-                writer.on('finish', (data)=>{
-                    console.log("DocumentRegistrator writer finished",data);
-                    return resolve(true);
-                });
-                writer.on('error', (error)=>{
-                    console.log("DocumentRegistrator writer error",error);
-                    return reject(error);
-                });
+                
+                // Save the file synchronously
+                console.log("DocumentRegistrator writing file synchronously");
+                fs.writeFileSync(filePath, response.data);
+                
+                console.log("DocumentRegistrator file written successfully");
+                return resolve(true);
+                
             } catch (error) {
                 console.error('DocumentRegistrator downloadAndPlaceDocument error:', error);
-                    return reject(error);
-                }
-            });
+                return reject(error);
+            }
+        });
     }
 }

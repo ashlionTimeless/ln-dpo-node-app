@@ -50,13 +50,9 @@ export default class DocumentRegistrator {
                 const outputPath = path.join(basePath, 'output');
 
                 const data = { name: 'John', age: 30, city: 'New York' };
-                fs.writeFile(`${inputPath}/data.json`, JSON.stringify(data, null, 2), 'utf8',(err)=>{
-                    if(err){
-                        console.error('DocumentRegistrator data.json write error:', err);
-                        return reject(err);
-                    }
-                    console.log("DocumentRegistrator data.json written successfully");
-                });
+                console.log("inputPath",inputPath);
+                let result = fs.writeFileSync(`${inputPath}/data.json`, JSON.stringify(data, null, 2), 'utf8');
+                console.log("DocumentRegistrator result",result);
                 console.log("DocumentRegistrator data.json written successfully");
 
                 // console.log("DocumentRegistrator basePath",basePath);
